@@ -524,7 +524,157 @@ Java 注解是附加在代码中的一些元信息，用于一些工具在编译
 
 ## 8. Java 泛型
 
+1. 更符合面向抽象的编程：与普通的 Object 代替一切类型这样简单粗暴而言，泛型使得数据的类别可以像参数一样由外部传递进来。它提供了一种扩展能力。
+2. 是一种安全监测的机制：当具体的类型确定后，只有相匹配的数据才能正常的赋值，否则编译器就不通过。所以说，它是一种类型安全检测机制，一定程度上提高了软件的安全性防止出现低级的失误。
+3. 提高代码的可读性：泛型提高了程序代码的可读性，不必要等到运行的时候才去强制转换，在定义或者实例化阶段，程序员能够一目了然猜测出代码要操作的数据类型。
+
+出于规范的目的，Java建议使用单个大写字母来代表类型参数。常见的如：
+
+1. T 代表：任何类；
+2. E 代表 ：泛型方法；
+3. K 代表 ：Key 的意思；
+4. V 代表： Value 的意思，通常与 K 一起配合使用；
+
+### 8.1 泛型的使用情形
+
+1. 泛型方法**<E>**
+
+   ```java
+   public static < E > void printArray( E[] inputArray ){
+   	for ( E element : inputArray ){
+   		System.out.printf( "%s ", element );
+   	}
+   }
+   ```
+
+2. 泛型类**<T>**
+
+   ```java
+   public class Box<T> {
+   	private T t;
+   	public void add(T t) {
+   		this.t = t;
+   	}
+   	public T get() {
+   		return t;
+   	}
+   }
+   ```
+
+### 8.2 通配符<?>
+
+通配符具有下面三种形式：
+
+1. `<?>`：被称为无限定通配符，它其中的 ? 其实代表的是未知类型，所以涉及到 ? 时的操作，一定与具体类型无关。
+2. `<? extends T>`：被称作有上限的通配符，表示该通配符所代表的类型是 T 类型的子类。
+3. `<? super T>`：被称作有下限的通配符，表示该通配符所代表的类型是 T 类型的父类。
+
+### 8.3 类型擦除
+
+Java 中的泛型基本上都是在编译器这个层次来实现的。在生成的 Java 字节代码中是不包含泛型中的类型信息的。类型擦除的基本过程也比较简单，首先是找到用来替换类型参数的具体类。这个具体类一般是 Object。如果指定了类型参数的上界的话，则使用这个上界。把代码中的类型参数都替换成具体的类。
+
+注意事项：
+
+1. 在泛型方法或者泛型类中，不接受8种基本数据类型
+2. Java不能创建具体类型的泛型数组
 
 
 
+## 9. Java内部类
+
+内部类可分为：成员内部类（类中）、局部内部类（方法中）、匿名内部类、和静态内部类
+
+### 9.1 成员内部类
+
+定义在类内部的非静态类，就是成员内部类：它具有以下几个特点：
+
+1. 可以访问外部类的所有成员属性和方法
+2. 不能存在任何Static(静态)变量和方法（因为在类的初始化过程中，会先加载静态成员，而如果内部类是非静态的，如果含有静态成员，会产生歧义）
+3. 先创建外部类，才能创建内部类
+
+例如：
+
+```java
+public class Out {
+    private static int a;
+    private int b;
+    public class Inner {
+    	public void print() {
+   			System.out.println(a);
+    		System.out.println(b);
+    	}
+    }
+}
+```
+
+### 9.2 局部内部类
+
+嵌套在方法和作用域中，不能使用`public`、`private`、`protect`。
+
+```java
+public class Out {
+	private static int a;
+	private int b;
+	public void test(final int c) {
+		final int d = 1;
+		class Inner {
+			public void print() {
+				System.out.println(c);
+			}
+		}
+	}
+}
+```
+
+### 9.3 匿名内部类
+
+匿名内部类我们必须要继承一个父类或者实现一个接口，当然也仅能只继承一个父类或者实现一个接口。同时它也是没有class关键字，这是因为匿名内部类是直接使用new来生成一个对象的引用。
+
+具有以下的特性：
+
+1. 创建的对象没有名字
+2. 不可以家访问修饰符
+3. 当所在方法的形参需要被内部类里使用时，该形参必须被final修饰
+4. 不可引用在接口中定义的方法
+
+例如：
+
+```java
+abstract class Person {
+    public abstract void eat();
+}
+ 
+public class Demo {
+    public static void main(String[] args) {
+        Person p = new Person() {
+            public void eat() {
+                System.out.println("eat something");
+            }
+        };
+        p.eat();
+    }
+}
+```
+
+### 9.4 静态内部类
+
+定义在类内部的静态类，就是静态内部类。具有以下特点：
+
+1. 创建不需要依赖外部类
+2. 不能使用任何外部类的非static成员和方法
+3. 可以声明静态方法
+
+例如：
+
+```java
+public class Out {
+	private static int a;
+	private int b;
+	public static class Inner {
+		public void print() {
+			System.out.println(a);
+		}
+	}
+}
+```
 
