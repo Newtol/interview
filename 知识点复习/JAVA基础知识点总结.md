@@ -678,3 +678,90 @@ public class Out {
 }
 ```
 
+## 10. Java 枚举（Enum）
+
+Enum 是jdk1.5以后引入的一个新特性。这个特性可以使得我们的代码变得更加的简洁、安全以及便捷。
+
+### 10.1 Enum的简单使用
+
++ 常量的使用：以前我们定义常量会选择这样的方式：**public static final**，而当枚举出现后，我们可以使用这样的方式实现常量的定义：
+
+  ```java
+  public enum Day {
+      MONDAY, TUESDAY, WEDNESDAY,
+      THURSDAY, FRIDAY, SATURDAY, SUNDAY
+  }
+  ```
+
++ 自定义方法：使用Enum实现对异常的统一定义：
+
+  ```java
+  public enum ResultEnum {
+      /**
+       * 系统未知错误
+       */
+      UNKONW_ERROR(-1,"未知错误："),
+       /**
+        * 请求成功
+        */
+      SUCCESS(0,"success"),
+      /**
+       * 请求缺少参数
+       */
+      LACK_PARAMETER(1,"缺少参数");
+      /**
+       * 错误码
+       */
+      private Integer errorCode;
+      /**
+       * 错误提示信息
+       */
+      private String message;
+  
+      ResultEnum(Integer errorCode, String message) {
+          this.errorCode = errorCode;
+          this.message = message;
+      }
+  
+      public Integer getErrorCode() {
+          return errorCode;
+      }
+      
+      public String getMessage() {
+          return message;
+      }
+  }
+  ```
+
++ switch使用：JDK1.6之前的switch语句只支持int,char,enum类型，使用枚举，能让我们的代码可读性更强。（jdk1.7以后Switch补充支持了string类型） 
+
+  ```java
+  enum Color {GREEN,RED,BLUE}
+  
+  public class EnumDemo4 {
+  
+      public static void printName(Color color){
+          switch (color){
+              case BLUE: //无需使用Color进行引用
+                  System.out.println("蓝色");
+                  break;
+              case RED:
+                  System.out.println("红色");
+                  break;
+              case GREEN:
+                  System.out.println("绿色");
+                  break;
+          }
+      }
+  
+      public static void main(String[] args){
+          printName(Color.BLUE);
+          printName(Color.RED);
+          printName(Color.GREEN);
+      }
+  }
+  ```
+
+### 10.2 Enum实现原理
+
+实际上在使用关键字enum创建枚举类型并编译后，编译器会为我们生成一个相关的class，这个类继承了Java API中的java.lang.Enum类，也就是说通过关键字enum创建枚举类型在编译后事实上也是一个class类型而且该类继承自java.lang.Enum类。
